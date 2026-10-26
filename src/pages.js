@@ -61,6 +61,34 @@ function ctaBand(lang) {
 </div></section>`;
 }
 
+// Tủ 4 ngăn: cuộn xuống thì từng ngăn mở ra, mẫu nón được đưa lên cùng vài thông tin.
+// Ảnh dùng tạm ảnh thật của xưởng; muốn đổi sang ảnh quảng cáo chỉ cần đổi số ảnh ở đây.
+const VAULT = [
+  { id: 'cap', n: 4, vi: ['Nón kết', 'Dáng lưỡi trai quen thuộc, hợp mọi lứa tuổi. Phối hai tông màu giữa thân và lưỡi trai, logo thêu ở mặt trước.', ['Thêu phẳng hoặc nổi', 'Phối nhiều tông màu', 'Sỉ và lẻ']], en: ['Baseball cap', 'The familiar curved-brim cap for every age. Two-tone body and brim with the logo embroidered on the front.', ['Flat or raised embroidery', 'Many colour pairings', 'Bulk and single']] },
+  { id: 'mesh', n: 9, vi: ['Nón lưới', 'Mặt trước thêu chữ nổi 3D, lưng lưới thoáng khí. Nhiều màu lưỡi trai để phối.', ['Thêu nổi 3D', 'Lưng lưới thoáng', 'Nhiều màu lưỡi trai']], en: ['Mesh-back cap', 'Raised 3D lettering on the front with a breathable mesh back, and many brim colours to pair.', ['Raised 3D embroidery', 'Breathable mesh back', 'Many brim colours']] },
+  { id: 'bucket', n: 13, vi: ['Nón tai bèo', 'Vành rộng che nắng, hợp công trường, du lịch và sự kiện ngoài trời. Thêu logo hoặc tên công ty ở thân nón.', ['Vành rộng che nắng', 'Thêu huy hiệu, tên công ty', 'Hợp du lịch, sự kiện']], en: ['Bucket hat', 'A wide brim for sun cover on worksites, trips and outdoor events, with a logo or company name embroidered on the crown.', ['Wide sun brim', 'Crest or company name', 'Made for travel and events']] },
+  { id: 'custom', n: 22, vi: ['Nón theo mẫu riêng', 'Bạn gửi logo hoặc ý tưởng, xưởng lên mẫu và thêu đúng thiết kế cho trường học, công ty du lịch, shop nón và từng cá nhân.', ['Theo thiết kế của bạn', 'Chọn vải, phối màu', 'Nhận cả đơn lẻ']], en: ['Made to your design', 'Send a logo or an idea and we sample it and embroider it exactly, for schools, tour companies, cap shops and individuals.', ['Your own design', 'Choose fabric and colours', 'Small orders welcome']] },
+];
+
+function vault(lang) {
+  const t = (vi, en) => (lang === 'vi' ? vi : en);
+  const k = lang === 'vi' ? 'vi' : 'en';
+  const pad = (i) => String(i + 1).padStart(2, '0');
+  const drawers = VAULT.map((v, i) => `<div class="drawer" data-i="${i}"><span class="drawer__in"></span><div class="drawer__front"><span class="drawer__no">${pad(i)}</span><span class="drawer__name">${v[k][0]}</span><i class="drawer__handle"></i></div></div>`).join('');
+  const items = VAULT.map((v, i) => `<article class="item" data-i="${i}">
+      <figure class="item__img"><img src="/media/p${v.n}.webp" alt="${alt(v.n, lang)}" width="800" height="1000" loading="lazy" decoding="async"></figure>
+      <div class="item__txt"><span class="item__no">${pad(i)} / ${pad(VAULT.length - 1)}</span><h3>${v[k][0]}</h3><p>${v[k][1]}</p>
+        <ul class="tags">${v[k][2].map((x) => `<li>${x}</li>`).join('')}</ul>
+        <a class="link" href="${ROUTES.products[lang]}#${v.id}">${t('Xem thêm mẫu', 'See more')}${ICON.arrow || ''}</a></div>
+    </article>`).join('');
+  return `<section class="vault" id="vault" aria-label="${t('Tủ mẫu nón', 'Cap sample cabinet')}">
+  <div class="vault__track"><div class="vault__sticky"><div class="wrap">
+    <div class="vault__head"><span class="eyebrow">${t('Tủ mẫu', 'Sample cabinet')}</span><h2>${t('Mở từng ngăn, xem từng mẫu nón', 'Open each drawer, meet each cap')}</h2></div>
+    <div class="vault__grid"><div class="cabinet" aria-hidden="true">${drawers}</div><div class="vault__stage">${items}</div></div>
+  </div></div></div>
+</section>`;
+}
+
 // =====================================================================
 // TRANG CHỦ
 // =====================================================================
@@ -126,6 +154,8 @@ function home(lang) {
   <div class="stat reveal"><b>${t('Sỉ và lẻ', 'Bulk & single')}</b><span>${t('nhận mọi số lượng', 'any quantity welcome')}</span></div>
   <div class="stat reveal"><b>${t('Mọi loại nón', 'Every style')}</b><span>${t('theo mẫu thiết kế riêng', 'to your own design')}</span></div>
 </div></section>
+
+${vault(lang)}
 
 <section class="sec"><div class="wrap">
   ${head(lang, t('Sản phẩm', 'Products'), t('Làm được mọi loại nón', 'Every kind of cap and hat'), t('Từ nón kết, nón lưới đến nón tai bèo. Bạn chỉ cần có ý tưởng, xưởng lo phần còn lại.', 'From baseball caps and mesh caps to bucket hats. Bring the idea and we handle the rest.'))}

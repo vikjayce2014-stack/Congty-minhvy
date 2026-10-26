@@ -111,6 +111,34 @@
     });
   }
 
+  /* ---------- Tủ mẫu 4 ngăn: tiến độ cuộn điều khiển từng ngăn ---------- */
+  var vault = $('#vault');
+  if (vault && !reduce) {
+    var vTrack = $('.vault__track', vault), vItems = $$('.item', vault), vDrawers = $$('.drawer', vault);
+    var ease = function (x) { return 1 - Math.pow(1 - x, 3); };
+    var clamp01 = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
+    var vTick = false;
+    var vRender = function () {
+      vTick = false;
+      var r = vTrack.getBoundingClientRect(), span = r.height - window.innerHeight;
+      var p = span > 0 ? clamp01(-r.top / span) : 0, N = vItems.length, seg = p * N;
+      for (var i = 0; i < N; i++) {
+        var u = seg - i, inn = ease(clamp01(u / 0.4)), out = i < N - 1 ? ease(clamp01((u - 0.8) / 0.2)) : 0;
+        var vis = inn * (1 - out), y = (1 - inn) * 70 - out * 50;
+        var it = vItems[i];
+        it.style.opacity = vis.toFixed(3);
+        it.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0) scale(' + (0.92 + 0.08 * inn - 0.04 * out).toFixed(4) + ')';
+        it.classList.toggle('is-on', vis > 0.5);
+        vDrawers[i].style.setProperty('--o', vis.toFixed(3));
+        vDrawers[i].classList.toggle('is-on', vis > 0.5);
+      }
+    };
+    var vReq = function () { if (!vTick) { vTick = true; requestAnimationFrame(vRender); } };
+    window.addEventListener('scroll', vReq, { passive: true });
+    window.addEventListener('resize', vReq);
+    vRender();
+  }
+
   /* ---------- Hero: sao nền + vòng ảnh 3D ---------- */
   var hero = $('#hero');
   if (!hero) return;
