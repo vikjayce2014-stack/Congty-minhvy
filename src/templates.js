@@ -89,7 +89,7 @@ ${canonical}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/styles.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(d){d.classList.add('js');var t='dark';try{t=localStorage.getItem('mv-theme')||'dark'}catch(e){}var q=/[?&]theme=(light|dark)/.exec(location.search);if(q)t=q[1];d.setAttribute('data-theme',t==='light'?'light':'dark');var m=d.querySelector('meta[name=theme-color]');if(m&&t==='light')m.content='#fdf2cc'})(document.documentElement)</script>
 <script type="application/ld+json">${ld}</script>
 </head>
 <body class="page-${key}">
@@ -100,6 +100,7 @@ ${canonical}
   <div class="nav__menu" id="navmenu">
     <nav class="nav__links" aria-label="${t('Chính', 'Main')}">${nav}</nav>
     <div class="nav__actions">
+      <button class="theme" type="button" aria-label="${t('Đổi giao diện sáng hoặc tối', 'Switch light or dark theme')}"><svg class="theme__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="theme__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2z" fill="currentColor"/></svg></button>
       <a class="lang" href="${ROUTES[key][other(lang)]}" hreflang="${other(lang)}" lang="${other(lang)}" aria-label="${t('Switch to English', 'Chuyển sang tiếng Việt')}">${lang === 'vi' ? 'EN' : 'VI'}</a>
       <a class="btn btn--sm" href="tel:${C.tel}"><span>${t('Gọi ngay', 'Call now')}</span></a>
     </div>

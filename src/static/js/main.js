@@ -19,6 +19,20 @@
   $$('a', menu).forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
   window.addEventListener('resize', function () { if (window.innerWidth > 1020) setMenu(false); });
 
+  /* ---------- Giao diện sáng / tối ---------- */
+  var root = document.documentElement, themeBtn = $('.theme'), themeMeta = $('meta[name="theme-color"]');
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    themeBtn.setAttribute('aria-pressed', t === 'light' ? 'true' : 'false');
+    if (themeMeta) themeMeta.content = t === 'light' ? '#fdf2cc' : '#0b0a0a';
+  }
+  applyTheme(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+  themeBtn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem('mv-theme', next); } catch (e) {}
+  });
+
   /* ---------- Hiện dần khi cuộn ---------- */
   var revealEls = $$('.reveal');
   if ('IntersectionObserver' in window && !reduce) {
