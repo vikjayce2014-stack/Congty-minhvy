@@ -5,3 +5,4 @@ shots/
 .dev.vars
 .wrangler/
 *.log
+ads/
