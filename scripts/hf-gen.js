@@ -22,7 +22,7 @@ if (!name || !prompt) { console.error('Thiếu tên file hoặc prompt'); proces
   });
   const first = await sub.json();
   if (!sub.ok) { console.error('Lỗi gửi yêu cầu', sub.status, JSON.stringify(first).slice(0, 400)); process.exit(1); }
-  console.log('Đã gửi', first.request_id, first.status);
+  console.log('Đã gửi', first.request_id, first.status); fs.mkdirSync(path.join(root, 'ads'), { recursive: true }); fs.writeFileSync(path.join(root, 'ads', name + '.id'), first.request_id);
   let res = first;
   for (let n = 0; n < 60 && !['completed', 'failed', 'nsfw', 'canceled'].includes(res.status); n++) {
     await new Promise((r) => setTimeout(r, 4000));

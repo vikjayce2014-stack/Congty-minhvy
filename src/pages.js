@@ -76,7 +76,7 @@ function vault(lang) {
   const pad = (i) => String(i + 1).padStart(2, '0');
   const drawers = VAULT.map((v, i) => `<div class="drawer" data-i="${i}"><span class="drawer__in"></span><div class="drawer__front"><span class="drawer__no">${pad(i)}</span><span class="drawer__name">${v[k][0]}</span><i class="drawer__handle"></i></div></div>`).join('');
   const items = VAULT.map((v, i) => `<article class="item" data-i="${i}">
-      <figure class="item__img"><img src="/media/${v.ad}.webp" alt="${v[k][0]}" width="900" height="1200" loading="lazy" decoding="async"></figure>
+      <figure class="item__img"><video class="item__vid" muted loop playsinline preload="none" poster="/media/${v.ad}.webp" data-vsrc="/media/${v.ad}.mp4" width="540" height="722" aria-label="${v[k][0]}"></video></figure>
       <div class="item__txt"><span class="item__no">${pad(i)} / ${pad(VAULT.length - 1)}</span><h3>${v[k][0]}</h3><p>${v[k][1]}</p>
         <ul class="tags">${v[k][2].map((x) => `<li>${x}</li>`).join('')}</ul>
         <a class="link" href="${ROUTES.products[lang]}#${v.id}">${t('Xem thêm mẫu', 'See more')}${ICON.arrow || ''}</a></div>

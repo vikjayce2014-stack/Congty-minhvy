@@ -114,7 +114,7 @@
   /* ---------- Tủ mẫu 4 ngăn: tiến độ cuộn điều khiển từng ngăn ---------- */
   var vault = $('#vault');
   if (vault && !reduce) {
-    var vTrack = $('.vault__track', vault), vItems = $$('.item', vault), vDrawers = $$('.drawer', vault);
+    var vTrack = $('.vault__track', vault), vItems = $$('.item', vault), vVids = vItems.map(function (it) { return $('.item__vid', it); }), vDrawers = $$('.drawer', vault);
     var ease = function (x) { return 1 - Math.pow(1 - x, 3); };
     var clamp01 = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
     var vTick = false;
@@ -128,7 +128,13 @@
         var it = vItems[i];
         it.style.opacity = vis.toFixed(3);
         it.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0) scale(' + (0.92 + 0.08 * inn - 0.04 * out).toFixed(4) + ')';
-        it.classList.toggle('is-on', vis > 0.5);
+        var on = vis > 0.5;
+        it.classList.toggle('is-on', on);
+        var vv = vVids[i];
+        if (vv) {
+          if (on) { if (!vv.getAttribute('src')) vv.src = vv.getAttribute('data-vsrc'); if (vv.paused) { var pp = vv.play(); if (pp && pp.catch) pp.catch(function () {}); } }
+          else if (!vv.paused) vv.pause();
+        }
         vDrawers[i].style.setProperty('--o', vis.toFixed(3));
         vDrawers[i].classList.toggle('is-on', vis > 0.5);
       }
