@@ -96,7 +96,7 @@ function home(lang) {
   const t = (vi, en) => (lang === 'vi' ? vi : en);
   const meta = {
     title: t('Minh Vy - Xưởng may nón, thêu logo theo thiết kế riêng', 'Minh Vy - Cap & hat workshop, custom embroidery'),
-    desc: t('Xưởng may nón Minh Vy hơn 20 năm kinh nghiệm: sản xuất sỉ và lẻ mọi loại nón, thêu logo theo thiết kế riêng cho trường học, công ty du lịch, shop nón. Hotline 090 979 1814.', 'Minh Vy has over 20 years making caps and hats: wholesale and retail, custom logo embroidery for schools, tour companies and cap shops. Hotline +84 909 791 814.'),
+    desc: t('Xưởng may nón Minh Vy hơn 20 năm kinh nghiệm: sản xuất sỉ và lẻ mọi loại nón, thêu logo theo thiết kế riêng cho trường học, công ty du lịch, shop nón. Hotline 0777 222 426.', 'Minh Vy has over 20 years making caps and hats: wholesale and retail, custom logo embroidery for schools, tour companies and cap shops. Hotline +84 777 222 426.'),
   };
   const cards = RING.concat(RING, RING)
     .map(([n, vi, en]) => `<div class="card"><img src="/media/p${n}.webp" alt="" width="260" height="347" decoding="async"><i>${t(vi, en)}</i></div>`)
@@ -331,7 +331,7 @@ function contact(lang) {
   const t = (vi, en) => (lang === 'vi' ? vi : en);
   const meta = {
     title: t('Liên hệ - Báo giá nón, đặt hàng sỉ và lẻ | Minh Vy', 'Contact - Quotes and orders | Minh Vy'),
-    desc: t('Liên hệ xưởng Minh Vy: 090 979 1814 (gọi, Zalo). 78/8 Nguyễn Văn Quá, Phường Đông Hưng Thuận, TP. Hồ Chí Minh.', 'Contact Minh Vy: +84 909 791 814 (call or Zalo). 78/8 Nguyen Van Qua, Dong Hung Thuan Ward, Ho Chi Minh City.'),
+    desc: t('Liên hệ xưởng Minh Vy: 0777 222 426 (gọi, Zalo). 78/8 Nguyễn Văn Quá, Phường Đông Hưng Thuận, TP. Hồ Chí Minh.', 'Contact Minh Vy: +84 777 222 426 (call or Zalo). 78/8 Nguyen Van Qua, Dong Hung Thuan Ward, Ho Chi Minh City.'),
   };
   const mapQ = encodeURIComponent(C.address);
   const body = `
