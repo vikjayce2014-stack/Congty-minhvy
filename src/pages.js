@@ -89,14 +89,61 @@ function vault(lang) {
 </section>`;
 }
 
+// Phần "Chuyên thêu logo": giới thiệu, cuộn qua các miếng thêu thật, rồi ghép thành la bàn.
+const EMB_CAPS = [
+  ['Nhiều mảng màu, hình nhỏ vẫn rõ', 'Many colour fields, small figures stay clear'],
+  ['Chữ thêu nhỏ, nét mảnh vẫn sắc', 'Fine script and thin lines stay crisp'],
+  ['Viền gọn, mép đều', 'Clean, even borders'],
+  ['Chuyển sắc mềm, nhiều lớp chỉ', 'Soft tonal shifts in layered thread'],
+  ['Huy hiệu tròn, viền thêu nổi', 'Round badge with a raised stitched rim'],
+];
+const COMPASS = `<svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+  <circle cx="100" cy="100" r="99" fill="#d9cdb0"/><circle cx="100" cy="100" r="86" fill="#fbfaf6" stroke="#bfae86" stroke-width="1.2"/>
+  <g fill="#e2b13a">${Array.from({ length: 24 }, (_, i) => `<rect x="98.6" y="24" width="2.8" height="7" rx="1" transform="rotate(${i * 15} 100 100)"/>`).join('')}</g>
+  <g font-family="Georgia,serif" font-weight="700" font-size="9" fill="#6b5a3a" text-anchor="middle"><text x="100" y="12">N</text><text x="190" y="103">E</text><text x="100" y="196">S</text><text x="10" y="103">W</text></g>
+  ${[0, 90, 180, 270].map((r, k) => `<g class="arm arm${k}" transform="rotate(${r} 100 100)"><g class="arm__in"><polygon points="100,30 88,90 100,100" fill="${k === 1 ? '#e0524a' : '#7fd0e0'}"/><polygon points="100,30 112,90 100,100" fill="${k === 1 ? '#a8302b' : '#2b8fb4'}"/></g></g>`).join('')}
+  <circle cx="100" cy="100" r="24" fill="#fff" stroke="#e6dfcb" stroke-width="1.5"/>
+</svg>`;
+
+function emb(lang) {
+  const t = (vi, en) => (lang === 'vi' ? vi : en);
+  const k = lang === 'vi' ? 0 : 1;
+  const feats = [
+    [t('Sắc nét từng chi tiết', 'Sharp in every detail'), t('Chữ nhỏ, đường mảnh vẫn rõ ràng sau khi thêu.', 'Small lettering and thin lines stay clear once stitched.')],
+    [t('Nhiều màu chỉ, chuyển sắc', 'Many thread colours'), t('Phối nhiều mảng màu và chuyển sắc ngay trong một logo.', 'Blend many colour fields and tonal shifts inside one logo.')],
+    [t('Theo thiết kế riêng', 'Made to your design'), t('Bạn gửi file hoặc hình vẽ, xưởng thêu đúng mẫu của bạn.', 'Send a file or a sketch and we stitch your own design.')],
+    [t('Thêu phẳng hoặc nổi 3D', 'Flat or raised 3D'), t('Chọn thêu phẳng tinh tế hoặc thêu nổi khối cho logo nổi bật.', 'Choose fine flat stitching or raised 3D for a logo that stands out.')],
+  ].map(([h, p], i) => `<div class="feat reveal"><span class="feat__n">0${i + 1}</span><h3>${h}</h3><p>${p}</p></div>`).join('');
+  const pieces = [1, 2, 3, 4, 5].map((n, i) => `<img class="piece${i === 4 ? ' piece--round' : ''}" data-i="${i}" src="/media/emb-${n}.webp" alt="" loading="lazy" decoding="async">`).join('');
+  const dots = EMB_CAPS.map((c, i) => `<i data-i="${i}"></i>`).join('');
+  return `<section class="emb" id="embroidery" aria-labelledby="emb-h">
+  <div class="wrap emb__intro">
+    <div class="sec__head reveal"><span class="eyebrow">${t('Thêu logo', 'Logo embroidery')}</span><h2 id="emb-h">${t('Chuyên thêu logo, thiết kế riêng, sắc nét từng chi tiết', 'Logo embroidery made to your design, sharp in every detail')}</h2>
+      <p>${t('Gửi xưởng logo hoặc hình vẽ của bạn, xưởng thêu lại đúng từng đường nét. Thêu trên nón, trên áo, hoặc làm miếng thêu rời (patch) để gắn lên đồng phục, balo.', 'Send us your logo or artwork and we stitch every line faithfully, on caps, on shirts, or as loose patches to sew onto uniforms and bags.')}</p></div>
+    <div class="feats">${feats}</div>
+  </div>
+  <div class="emb__track"><div class="emb__sticky"><div class="wrap emb__grid">
+    <div class="emb__cap" aria-live="off"><span class="eyebrow" id="embK">${t('Mẫu xưởng đã thực hiện', 'Made at our workshop')}</span><h3 id="embT">${t('Khởi Nguồn 2019', 'Khoi Nguon 2019')}</h3><p id="embS">${EMB_CAPS[0][k]}</p><div class="emb__dots" aria-hidden="true">${dots}</div></div>
+    <div class="emb__stage" id="embStage"><div class="emb__glow"></div><div class="compass" id="embCompass">${COMPASS}</div>${pieces}</div>
+  </div></div></div>
+  <p class="sr-only">${t('Bốn miếng thêu hình quạt và một huy hiệu tròn có bản đồ Việt Nam của sự kiện Khởi Nguồn 2019, ghép lại thành một la bàn.', 'Four fan-shaped embroidered patches and a round badge with a map of Vietnam from the Khoi Nguon 2019 event, assembled into a compass.')}</p>
+  <div class="wrap emb__after reveal">
+    <div class="emb__vid"><video muted loop playsinline preload="none" poster="/media/emb-video.webp" data-src="/media/emb-video.mp4" aria-label="${t('Ghép từng miếng thêu thành la bàn tại xưởng', 'Assembling the embroidered patches into a compass at the workshop')}"></video></div>
+    <div><span class="eyebrow">${t('Quay tại xưởng', 'Filmed at the workshop')}</span><h3>${t('Từng miếng thêu khớp nhau chính xác', 'Every patch fits exactly')}</h3>
+      <p>${t('Mỗi miếng được thêu riêng rồi ghép lại, nên viền và kích thước phải đều và khớp. Bạn có ý tưởng logo hay bộ miếng thêu riêng, gửi xưởng để được tư vấn.', 'Each piece is stitched separately and then joined, so edges and sizes must match. Got a logo or a patch set in mind? Send it over for advice.')}</p>
+      <div class="band__act"><a class="btn" href="${C.zalo}" target="_blank" rel="noopener"><span>${t('Gửi logo qua Zalo', 'Send your logo on Zalo')}</span></a><a class="btn btn--ghost" href="tel:${C.tel}"><span>${ICON.phone}${C.phone}</span></a></div></div>
+  </div>
+</section>`;
+}
+
 // =====================================================================
 // TRANG CHỦ
 // =====================================================================
 function home(lang) {
   const t = (vi, en) => (lang === 'vi' ? vi : en);
   const meta = {
-    title: t('Minh Vy - Xưởng may nón, thêu logo theo thiết kế riêng', 'Minh Vy - Cap & hat workshop, custom embroidery'),
-    desc: t('Xưởng may nón Minh Vy hơn 20 năm kinh nghiệm: sản xuất sỉ và lẻ mọi loại nón, thêu logo theo thiết kế riêng cho trường học, công ty du lịch, shop nón. Hotline 0777 222 426.', 'Minh Vy has over 20 years making caps and hats: wholesale and retail, custom logo embroidery for schools, tour companies and cap shops. Hotline +84 777 222 426.'),
+    title: t('Xưởng may nón Minh Vy TP.HCM | Thêu logo, may nón sỉ và lẻ', 'Minh Vy Cap Factory, Ho Chi Minh City | Custom Embroidery'),
+    desc: t('Xưởng may nón Minh Vy (TP.HCM), hơn 20 năm kinh nghiệm: may nón sỉ và lẻ, thêu logo theo thiết kế riêng cho trường học, công ty du lịch, shop nón. Hotline 0777 222 426.', 'Minh Vy cap factory in Ho Chi Minh City, 20+ years of experience: wholesale and retail caps with custom logo embroidery for schools, tour companies and shops.'),
   };
   const cards = RING.concat(RING, RING)
     .map(([n, vi, en]) => `<div class="card"><img src="/media/p${n}.webp" alt="" width="260" height="347" decoding="async"><i>${t(vi, en)}</i></div>`)
@@ -157,6 +204,8 @@ function home(lang) {
 
 ${vault(lang)}
 
+${emb(lang)}
+
 <section class="sec"><div class="wrap">
   ${head(lang, t('Sản phẩm', 'Products'), t('Làm được mọi loại nón', 'Every kind of cap and hat'), t('Từ nón kết, nón lưới đến nón tai bèo. Bạn chỉ cần có ý tưởng, xưởng lo phần còn lại.', 'From baseball caps and mesh caps to bucket hats. Bring the idea and we handle the rest.'))}
   <div class="cats">${cats}</div>
@@ -198,7 +247,7 @@ ${ctaBand(lang)}`;
 function about(lang) {
   const t = (vi, en) => (lang === 'vi' ? vi : en);
   const meta = {
-    title: t('Giới thiệu - Minh Vy, xưởng may nón hơn 20 năm', 'About - Minh Vy, cap workshop with 20+ years'),
+    title: t('Giới thiệu xưởng may nón Minh Vy | Hơn 20 năm kinh nghiệm', 'About Minh Vy | Cap factory with 20+ years of experience'),
     desc: t('Minh Vy là xưởng may nón với hơn 20 năm kinh nghiệm, công suất khoảng 10.000 đơn mỗi tháng, nhận cả đơn lẻ và đơn sỉ.', 'Minh Vy is a cap workshop with over 20 years of experience, around 10,000 orders a month, taking both small and wholesale orders.'),
   };
   const body = `
@@ -249,7 +298,7 @@ ${ctaBand(lang)}`;
 function products(lang) {
   const t = (vi, en) => (lang === 'vi' ? vi : en);
   const meta = {
-    title: t('Sản phẩm - Nón kết, nón lưới, nón tai bèo, thêu logo | Minh Vy', 'Products - Caps, mesh caps, bucket hats, embroidery | Minh Vy'),
+    title: t('Nón kết, nón lưới, nón tai bèo thêu logo theo mẫu | Minh Vy', 'Baseball caps, mesh caps, bucket hats with custom logo | Minh Vy'),
     desc: t('Nón kết, nón lưới, nón tai bèo, nón trường học, nón du lịch và nón theo mẫu riêng. Thêu phẳng và thêu nổi 3D, nhận sỉ và lẻ.', 'Baseball caps, mesh caps, bucket hats, school and tour caps and fully custom designs. Flat and raised 3D embroidery, wholesale and retail.'),
   };
   const groups = [
@@ -297,7 +346,7 @@ ${ctaBand(lang)}`;
 function process(lang) {
   const t = (vi, en) => (lang === 'vi' ? vi : en);
   const meta = {
-    title: t('Quy trình làm nón - Thêu, may, ép định hình | Minh Vy', 'How we make caps - embroidery, sewing, forming | Minh Vy'),
+    title: t('Quy trình may nón và thêu logo tại xưởng | Minh Vy', 'How we make caps and embroider logos | Minh Vy'),
     desc: t('Quy trình làm nón tại xưởng Minh Vy: nhận thiết kế, thêu, may ráp, ép định hình, kiểm tra và giao hàng.', 'How Minh Vy makes caps: receiving your design, embroidery, sewing, forming, inspection and delivery.'),
   };
   const steps = [
@@ -330,7 +379,7 @@ ${ctaBand(lang)}`;
 function contact(lang) {
   const t = (vi, en) => (lang === 'vi' ? vi : en);
   const meta = {
-    title: t('Liên hệ - Báo giá nón, đặt hàng sỉ và lẻ | Minh Vy', 'Contact - Quotes and orders | Minh Vy'),
+    title: t('Liên hệ Minh Vy | Báo giá may nón sỉ, thêu logo TP.HCM', 'Contact Minh Vy | Quotes for wholesale caps and logo embroidery'),
     desc: t('Liên hệ xưởng Minh Vy: 0777 222 426 (gọi, Zalo). 78/8 Nguyễn Văn Quá, Phường Đông Hưng Thuận, TP. Hồ Chí Minh.', 'Contact Minh Vy: +84 777 222 426 (call or Zalo). 78/8 Nguyen Van Qua, Dong Hung Thuan Ward, Ho Chi Minh City.'),
   };
   const mapQ = encodeURIComponent(C.address);

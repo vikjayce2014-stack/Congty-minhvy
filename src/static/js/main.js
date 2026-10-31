@@ -145,6 +145,75 @@
     vRender();
   }
 
+  /* ---------- Chuyên thêu logo: lướt qua từng miếng thêu rồi ghép thành la bàn ---------- */
+  var emb = $('#embroidery');
+  if (emb && !reduce) {
+    var eTrack = $('.emb__track', emb), eStage = $('#embStage'), ePieces = $$('.piece', eStage), eCompass = $('#embCompass'), eGlow = $('.emb__glow', eStage);
+    var eCap = $('.emb__cap', emb), eT = $('#embT'), eS = $('#embS'), eK = $('#embK'), eDots = $$('.emb__dots i', emb), eArms = $$('.arm__in', eCompass);
+    var eVi = document.documentElement.lang !== 'en';
+    var capsA = eVi
+      ? ['Nhiều mảng màu, hình nhỏ vẫn rõ', 'Chữ thêu nhỏ, nét mảnh vẫn sắc', 'Viền gọn, mép đều', 'Chuyển sắc mềm, nhiều lớp chỉ', 'Huy hiệu tròn, viền thêu nổi']
+      : ['Many colour fields, small figures stay clear', 'Fine script and thin lines stay crisp', 'Clean, even borders', 'Soft tonal shifts in layered thread', 'Round badge with a raised stitched rim'];
+    var titleA = eVi ? 'Khởi Nguồn 2019' : 'Khoi Nguon 2019', kickA = eVi ? 'Mẫu xưởng đã thực hiện' : 'Made at our workshop';
+    var titleB = eVi ? 'Ghép lại thành la bàn' : 'Assembled into a compass';
+    var subB = eVi ? 'Bốn mảnh quạt và huy hiệu bản đồ khớp nhau theo đúng file thiết kế.' : 'Four fan pieces and the map badge fit together exactly to the design file.';
+    var kickB = eVi ? 'Ghép từng mảnh' : 'Piece by piece';
+    var eClamp = function (x, a, b) { return x < a ? a : x > b ? b : x; };
+    var eEase = function (x) { x = eClamp(x, 0, 1); return x * x * (3 - 2 * x); };
+    var eLerp = function (a, b, t) { return a + (b - a) * t; };
+    // vị trí cuối của bốn miếng quạt quanh la bàn: [x, y, góc xoay] (tỉ lệ theo cạnh sân khấu)
+    var FIN = [[0, -0.4, 0], [0.4, 0, 90], [0, 0.4, 180], [-0.4, 0, 270]];
+    var eKey = '', eReq2 = false, eSwapT = 0;
+    var setCap = function (key, kick, title, sub, dot) {
+      if (key === eKey) return;
+      eKey = key; eCap.classList.add('swap');
+      clearTimeout(eSwapT);
+      eSwapT = setTimeout(function () { eK.textContent = kick; eT.textContent = title; eS.textContent = sub; eCap.classList.remove('swap'); }, 160);
+      eDots.forEach(function (d, i) { d.classList.toggle('on', i === dot); });
+    };
+    var eRender = function () {
+      eReq2 = false;
+      var r = eTrack.getBoundingClientRect(), span = r.height - window.innerHeight;
+      var p = span > 0 ? eClamp(-r.top / span, 0, 1) : 0, S = eStage.clientWidth;
+      var a = eClamp(p / 0.56, 0, 1), b = eClamp((p - 0.56) / 0.44, 0, 1), c = a * 4;
+      for (var i = 0; i < ePieces.length; i++) {
+        var d = i - c, ad = Math.abs(d);
+        var x = d * 0.6, y = -0.012 * Math.cos(d * 1.6), sc = 1 - 0.13 * Math.min(ad, 2.5), ry = eClamp(-d * 32, -60, 60), rz = d * 2.5;
+        var op = eClamp(1 - 0.9 * (ad - 0.5), 0, 1);
+        if (b > 0) {
+          if (i < 4) {
+            var e = eEase((b - 0.1) / 0.6), f = FIN[i];
+            var sx = (i - 4) * 0.6, ssc = 1 - 0.13 * 2.5;
+            x = eLerp(sx, f[0], e); y = eLerp(0, f[1], e); sc = eLerp(ssc, 0.46 / 0.62, e); ry = eLerp(60, 0, e); rz = eLerp(-10, f[2], e);
+            op = Math.max(op, eEase(b / 0.35));
+          } else {
+            var e2 = eEase((b - 0.38) / 0.4);
+            x = 0; y = 0; sc = eLerp(1, 0.24 / 0.5, e2); ry = 0; rz = 0; op = 1;
+          }
+        }
+        var el = ePieces[i];
+        el.style.opacity = op.toFixed(3);
+        el.style.zIndex = i === 4 ? 30 : String(20 - Math.round(ad * 2));
+        el.style.transform = 'translate(-50%,-50%) translate3d(' + (x * S).toFixed(1) + 'px,' + (y * S).toFixed(1) + 'px,0) rotateY(' + ry.toFixed(1) + 'deg) rotateZ(' + rz.toFixed(1) + 'deg) scale(' + sc.toFixed(4) + ')';
+      }
+      var base = eEase(b / 0.3);
+      eCompass.style.opacity = base.toFixed(3);
+      eCompass.style.transform = 'scale(' + (0.72 + 0.28 * base).toFixed(4) + ') rotateZ(' + ((1 - base) * -25).toFixed(1) + 'deg)';
+      eArms.forEach(function (g, k) {
+        var t = eEase((b - 0.28 - k * 0.05) / 0.26);
+        g.style.opacity = t.toFixed(3);
+        g.style.transform = 'translateY(' + ((1 - t) * -60).toFixed(1) + 'px) scale(' + (0.6 + 0.4 * t).toFixed(3) + ')';
+      });
+      eGlow.style.opacity = eEase((b - 0.8) / 0.2).toFixed(3);
+      if (b > 0.04) setCap('B', kickB, titleB, subB, 4);
+      else { var k2 = eClamp(Math.round(c), 0, 4); setCap('A' + k2, kickA, titleA, capsA[k2], k2); }
+    };
+    var eReq = function () { if (!eReq2) { eReq2 = true; requestAnimationFrame(eRender); } };
+    window.addEventListener('scroll', eReq, { passive: true });
+    window.addEventListener('resize', eReq);
+    eRender();
+  }
+
   /* ---------- Hero: sao nền + vòng ảnh 3D ---------- */
   var hero = $('#hero');
   if (!hero) return;

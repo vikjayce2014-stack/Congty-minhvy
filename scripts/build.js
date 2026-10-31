@@ -53,8 +53,15 @@ function copyDir(from, to) {
   // chỉ tạo sitemap và robots có địa chỉ tuyệt đối khi đã cấu hình siteUrl
   if (C.siteUrl) {
     const base = C.siteUrl.replace(/\/$/, '');
-    const items = urls.map((u) => `  <url><loc>${base}${u}</loc></url>`).join('\n');
-    fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items}\n</urlset>\n`);
+    const day = new Date().toISOString().slice(0, 10);
+    const items = [];
+    for (const key of Object.keys(ROUTES)) {
+      const alts = ['vi', 'en'].map((l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${base}${ROUTES[key][l]}"/>`).join('\n');
+      for (const l of ['vi', 'en']) {
+        items.push(`  <url>\n    <loc>${base}${ROUTES[key][l]}</loc>\n    <lastmod>${day}</lastmod>\n${alts}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${base}${ROUTES[key].vi}"/>\n    <priority>${key === 'home' ? '1.0' : '0.8'}</priority>\n  </url>`);
+      }
+    }
+    fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${items.join('\n')}\n</urlset>\n`);
     fs.writeFileSync(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
   } else {
     fs.writeFileSync(path.join(DIST, 'robots.txt'), 'User-agent: *\nAllow: /\n');

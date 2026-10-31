@@ -57,16 +57,43 @@ function layout(lang, key, meta, body) {
 <link rel="alternate" hreflang="en" href="${abs(ROUTES[key].en)}">
 <link rel="alternate" hreflang="x-default" href="${abs(ROUTES[key].vi)}">`
     : '';
-  const ld = JSON.stringify({
-    '@context': 'https://schema.org',
+  const base = C.siteUrl ? C.siteUrl.replace(/\/$/, '') : '';
+  const pageUrl = base + ROUTES[key][lang];
+  const biz = {
     '@type': 'LocalBusiness',
-    name: `Minh Vy - ${C.tagline[lang]}`,
+    '@id': base + '/#business',
+    name: t('Minh Vy - Xưởng may nón', 'Minh Vy - Cap factory'),
+    alternateName: 'Minh Vy',
+    description: t('Xưởng may nón và thêu logo tại TP.HCM, hơn 20 năm kinh nghiệm, nhận đơn sỉ và lẻ.', 'Cap manufacturer and logo embroidery workshop in Ho Chi Minh City with 20+ years of experience, taking wholesale and retail orders.'),
     telephone: '+84' + C.tel.slice(1),
-    address: { '@type': 'PostalAddress', streetAddress: C.address, addressCountry: 'VN' },
-    description: meta.desc,
-    ...(C.siteUrl ? { url: C.siteUrl } : {}),
+    address: { '@type': 'PostalAddress', streetAddress: '78/8 Nguyễn Văn Quá, Phường Đông Hưng Thuận', addressLocality: 'Thành phố Hồ Chí Minh', addressCountry: 'VN' },
+    areaServed: { '@type': 'Country', name: 'Việt Nam' },
+    knowsAbout: ['may nón', 'thêu logo', 'nón kết', 'nón lưới', 'nón tai bèo', 'miếng thêu patch'],
+    contactPoint: [{ '@type': 'ContactPoint', telephone: '+84' + C.tel.slice(1), contactType: 'sales', availableLanguage: ['vi', 'en'] }],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: t('Sản phẩm và dịch vụ', 'Products and services'),
+      itemListElement: [
+        t('May nón sỉ và lẻ', 'Wholesale and retail caps'), t('Thêu logo lên nón', 'Logo embroidery on caps'),
+        t('Làm nón theo thiết kế riêng', 'Custom-designed caps'), t('Thêu miếng patch rời', 'Loose embroidered patches'),
+      ].map((n) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n } })),
+    },
+    ...(base ? { url: base + '/', logo: { '@type': 'ImageObject', url: base + '/icon-512.png' }, image: base + '/og-image.jpg' } : {}),
     ...(C.email ? { email: C.email } : {}),
-  });
+  };
+  const graph = [biz];
+  if (base) {
+    graph.push({ '@type': 'WebSite', '@id': base + '/#website', url: base + '/', name: 'Minh Vy', inLanguage: ['vi', 'en'], publisher: { '@id': base + '/#business' } });
+    const pageName = (links.find(([k]) => k === key) || [])[1];
+    if (key !== 'home') {
+      graph.push({ '@type': 'BreadcrumbList', itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t('Trang chủ', 'Home'), item: base + ROUTES.home[lang] },
+        { '@type': 'ListItem', position: 2, name: pageName, item: pageUrl },
+      ] });
+    }
+    graph.push({ '@type': 'WebPage', '@id': pageUrl + '#page', url: pageUrl, name: meta.title, description: meta.desc, inLanguage: lang, isPartOf: { '@id': base + '/#website' }, about: { '@id': base + '/#business' } });
+  }
+  const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
   const nav = links
     .map(([k, label]) => `<a href="${ROUTES[k][lang]}"${k === key ? ' aria-current="page"' : ''}>${label}</a>`)
     .join('');
@@ -82,9 +109,23 @@ function layout(lang, key, meta, body) {
 <meta property="og:description" content="${meta.desc}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="${lang === 'vi' ? 'vi_VN' : 'en_US'}">
-<meta property="og:image" content="${abs('/media/p7-lg.webp') || '/media/p7-lg.webp'}">
+<meta property="og:site_name" content="Minh Vy">
+${base ? `<meta property="og:url" content="${pageUrl}">\n` : ''}<meta property="og:image" content="${abs('/og-image.jpg') || '/og-image.jpg'}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${t('Logo Minh Vy và nón thêu logo', 'Minh Vy logo and an embroidered cap')}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${meta.title}">
+<meta name="twitter:description" content="${meta.desc}">
+<meta name="twitter:image" content="${abs('/og-image.jpg') || '/og-image.jpg'}">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="geo.region" content="VN-SG">
+<meta name="geo.placename" content="Thành phố Hồ Chí Minh">
 ${canonical}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
