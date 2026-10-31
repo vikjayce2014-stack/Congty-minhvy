@@ -8,6 +8,8 @@ const root = path.resolve(__dirname, '..');
 const SRC = path.join(root, '..', 'Thêu');
 const MAXW = 760;
 const BRIGHT = 105; // ngưỡng sáng của viền miếng thêu
+const PEEL = 24; // số vòng gọt viền tối tối đa
+const PEEL_DARK = 120; // điểm ở mép tối hơn mức này bị coi là vải đen thừa
 const WALL = {};
 const OPEN = { 2: 13, 3: 13 };
 const ROI = { 2: [0.378, 0.688], 3: [0.374, 0.66] }; // miếng nằm sát mép ảnh: chỉ xét dải chứa miếng để vải tối bên dưới không bị coi là miếng
@@ -66,6 +68,18 @@ async function cut(n) {
   for (let i = 0; i < inside.length; i++) inside[i] = bg[i] ? 0 : 1;
   inside = erode(inside, w, h, WALL[n] || 3);
   if (OPEN[n]) inside = dilate(erode(inside, w, h, OPEN[n]), w, h, OPEN[n]); // mở: cắt các cầu nối mảnh sang vùng vải tối
+  // gọt viền: bóc dần các điểm tối ở mép ngoài cho tới khi gặp viền thêu sáng, để không còn vệt vải đen lưa thưa
+  for (let it = 0; it < PEEL; it++) {
+    const kill = [];
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      if (!inside[i]) continue;
+      if (inside[i - 1] && inside[i + 1] && inside[i - w] && inside[i + w]) continue;
+      if (Math.max(data[i * 4], data[i * 4 + 1], data[i * 4 + 2]) < PEEL_DARK) kill.push(i);
+    }
+    if (!kill.length) break;
+    for (const i of kill) inside[i] = 0;
+  }
   // giữ lại mảng lớn nhất (bỏ nhiễu rời)
   const lab = new Int32Array(w * h); const sizes = [0]; let L = 0;
   for (let s = 0; s < w * h; s++) {
