@@ -1,4 +1,10 @@
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
 const C = require('./content');
+
+// Mã phiên bản theo nội dung file, để trình duyệt tải lại CSS/JS ngay khi có thay đổi
+const ver = (rel) => { try { return crypto.createHash('md5').update(fs.readFileSync(path.join(__dirname, 'static', rel))).digest('hex').slice(0, 8); } catch (e) { return '0'; } };
 
 // ---------- Đường dẫn ----------
 const ROUTES = {
@@ -129,7 +135,7 @@ ${canonical}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/styles.css?v=${ver('css/styles.css')}">
 <script>(function(d){d.classList.add('js');var t='dark';try{t=localStorage.getItem('mv-theme')||'dark'}catch(e){}var q=/[?&]theme=(light|dark)/.exec(location.search);if(q)t=q[1];d.setAttribute('data-theme',t==='light'?'light':'dark');var m=d.querySelector('meta[name=theme-color]');if(m&&t==='light')m.content='#fdf2cc'})(document.documentElement)</script>
 <script type="application/ld+json">${ld}</script>
 </head>
@@ -176,9 +182,9 @@ ${body}
   <a class="fab__btn fab__call" href="tel:${C.tel}" aria-label="${t('Gọi', 'Call')} ${C.phone}">${ICON.phone}</a>
 </div>
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="${t('Xem ảnh', 'Image viewer')}"><button class="lb__x" type="button" aria-label="${t('Đóng', 'Close')}">×</button><button class="lb__n lb__prev" type="button" aria-label="${t('Ảnh trước', 'Previous')}">‹</button><button class="lb__n lb__next" type="button" aria-label="${t('Ảnh sau', 'Next')}">›</button><figure><img alt=""><figcaption></figcaption></figure></div>
-<script src="/js/main.js" defer></script>
+<script src="/js/main.js?v=${ver('js/main.js')}" defer></script>
 </body>
 </html>`;
 }
 
-module.exports = { ROUTES, other, layout, img, shot, video, ICON, MARK, setDims, C };
+module.exports = { ROUTES, other, layout, img, shot, video, ICON, MARK, setDims, ver, C };

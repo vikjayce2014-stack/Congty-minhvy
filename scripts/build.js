@@ -47,7 +47,7 @@ function copyDir(from, to) {
   }
 
   // trang 404
-  const nf = `<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>404 | Minh Vy</title><link rel="stylesheet" href="/css/styles.css"></head><body class="page-404"><main class="nf"><h1>404</h1><p>Không tìm thấy trang này. / Page not found.</p><p><a class="btn" href="/"><span>Về trang chủ</span></a></p></main></body></html>`;
+  const nf = `<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>404 | Minh Vy</title><link rel="stylesheet" href="/css/styles.css?v=${T.ver('css/styles.css')}"></head><body class="page-404"><main class="nf"><h1>404</h1><p>Không tìm thấy trang này. / Page not found.</p><p><a class="btn" href="/"><span>Về trang chủ</span></a></p></main></body></html>`;
   fs.writeFileSync(path.join(DIST, '404.html'), nf);
 
   // chỉ tạo sitemap và robots có địa chỉ tuyệt đối khi đã cấu hình siteUrl
