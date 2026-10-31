@@ -148,8 +148,8 @@
   /* ---------- Chuyên thêu logo: lướt qua từng miếng thêu rồi ghép thành la bàn ---------- */
   var emb = $('#embroidery');
   if (emb && !reduce) {
-    var eTrack = $('.emb__track', emb), eStage = $('#embStage'), ePieces = $$('.piece', eStage), eCompass = $('#embCompass'), eGlow = $('.emb__glow', eStage);
-    var eCap = $('.emb__cap', emb), eT = $('#embT'), eS = $('#embS'), eK = $('#embK'), eDots = $$('.emb__dots i', emb), eArms = $$('.arm__in', eCompass);
+    var eTrack = $('.emb__track', emb), eStage = $('#embStage'), ePieces = $$('.piece', eStage), eCompass = $('#embCompass'), eArmsBox = $('#embArms'), eGlow = $('.emb__glow', eStage);
+    var eCap = $('.emb__cap', emb), eT = $('#embT'), eS = $('#embS'), eK = $('#embK'), eDots = $$('.emb__dots i', emb), eArms = $$('.arm__in', eArmsBox);
     var eVi = document.documentElement.lang !== 'en';
     var capsA = eVi
       ? ['Nhiều mảng màu, hình nhỏ vẫn rõ', 'Chữ thêu nhỏ, nét mảnh vẫn sắc', 'Viền gọn, mép đều', 'Chuyển sắc mềm, nhiều lớp chỉ', 'Huy hiệu tròn, viền thêu nổi']
@@ -162,7 +162,7 @@
     var eEase = function (x) { x = eClamp(x, 0, 1); return x * x * (3 - 2 * x); };
     var eLerp = function (a, b, t) { return a + (b - a) * t; };
     // vị trí cuối của bốn miếng quạt quanh la bàn: [x, y, góc xoay] (tỉ lệ theo cạnh sân khấu)
-    var FIN = [[0, -0.4, 0], [0.4, 0, 90], [0, 0.4, 180], [-0.4, 0, 270]];
+    var FIN = [[-0.19, -0.19, -45], [0.19, 0.19, 135], [-0.19, 0.19, -135], [0.19, -0.19, 45]]; // góc chéo: tím, đỏ, xanh lá, hoàng hôn
     var eKey = '', eReq2 = false, eSwapT = 0;
     var setCap = function (key, kick, title, sub, dot) {
       if (key === eKey) return;
@@ -184,11 +184,11 @@
           if (i < 4) {
             var e = eEase((b - 0.1) / 0.6), f = FIN[i];
             var sx = (i - 4) * 0.6, ssc = 1 - 0.13 * 2.5;
-            x = eLerp(sx, f[0], e); y = eLerp(0, f[1], e); sc = eLerp(ssc, 0.46 / 0.62, e); ry = eLerp(60, 0, e); rz = eLerp(-10, f[2], e);
+            x = eLerp(sx, f[0], e); y = eLerp(0, f[1], e); sc = eLerp(ssc, 0.86, e); ry = eLerp(60, 0, e); rz = eLerp(-10, f[2], e);
             op = Math.max(op, eEase(b / 0.35));
           } else {
             var e2 = eEase((b - 0.38) / 0.4);
-            x = 0; y = 0; sc = eLerp(1, 0.24 / 0.5, e2); ry = 0; rz = 0; op = 1;
+            x = 0; y = 0; sc = eLerp(1, 0.67, e2); ry = 0; rz = 0; op = 1;
           }
         }
         var el = ePieces[i];
@@ -198,7 +198,7 @@
       }
       var base = eEase(b / 0.3);
       eCompass.style.opacity = base.toFixed(3);
-      eCompass.style.transform = 'scale(' + (0.72 + 0.28 * base).toFixed(4) + ') rotateZ(' + ((1 - base) * -25).toFixed(1) + 'deg)';
+      eCompass.style.transform = eArmsBox.style.transform = 'scale(' + (0.72 + 0.28 * base).toFixed(4) + ') rotateZ(' + ((1 - base) * -25).toFixed(1) + 'deg)';
       eArms.forEach(function (g, k) {
         var t = eEase((b - 0.28 - k * 0.05) / 0.26);
         g.style.opacity = t.toFixed(3);

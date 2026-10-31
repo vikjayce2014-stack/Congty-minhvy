@@ -97,12 +97,14 @@ const EMB_CAPS = [
   ['Chuyển sắc mềm, nhiều lớp chỉ', 'Soft tonal shifts in layered thread'],
   ['Huy hiệu tròn, viền thêu nổi', 'Round badge with a raised stitched rim'],
 ];
+// Đế la bàn: vành ngoài xám nhạt, mặt trắng. Các miếng quạt nằm đè lên, cánh sao nằm trên cùng.
 const COMPASS = `<svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-  <circle cx="100" cy="100" r="99" fill="#d9cdb0"/><circle cx="100" cy="100" r="86" fill="#fbfaf6" stroke="#bfae86" stroke-width="1.2"/>
-  <g fill="#e2b13a">${Array.from({ length: 24 }, (_, i) => `<rect x="98.6" y="24" width="2.8" height="7" rx="1" transform="rotate(${i * 15} 100 100)"/>`).join('')}</g>
-  <g font-family="Georgia,serif" font-weight="700" font-size="9" fill="#6b5a3a" text-anchor="middle"><text x="100" y="12">N</text><text x="190" y="103">E</text><text x="100" y="196">S</text><text x="10" y="103">W</text></g>
-  ${[0, 90, 180, 270].map((r, k) => `<g class="arm arm${k}" transform="rotate(${r} 100 100)"><g class="arm__in"><polygon points="100,30 88,90 100,100" fill="${k === 1 ? '#e0524a' : '#7fd0e0'}"/><polygon points="100,30 112,90 100,100" fill="${k === 1 ? '#a8302b' : '#2b8fb4'}"/></g></g>`).join('')}
-  <circle cx="100" cy="100" r="24" fill="#fff" stroke="#e6dfcb" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="99" fill="#d6d8dc"/><circle cx="100" cy="100" r="99" fill="none" stroke="#b9bcc2" stroke-width="1"/>
+  <circle cx="100" cy="100" r="93" fill="#fbfaf6" stroke="#e4e1d8" stroke-width="1.2"/>
+</svg>`;
+
+const COMPASS_ARMS = `<svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+  ${[0, 90, 180, 270].map((r, k) => `<g class="arm arm${k}" transform="rotate(${r} 100 100)"><g class="arm__in"><polygon points="100,13 87,87 100,100" fill="${k === 1 ? '#e0524a' : '#7fd0e0'}"/><polygon points="100,13 113,87 100,100" fill="${k === 1 ? '#a8302b' : '#2b8fb4'}"/></g></g>`).join('')}
 </svg>`;
 
 function emb(lang) {
@@ -124,7 +126,7 @@ function emb(lang) {
   </div>
   <div class="emb__track"><div class="emb__sticky"><div class="wrap emb__grid">
     <div class="emb__cap" aria-live="off"><span class="eyebrow" id="embK">${t('Mẫu xưởng đã thực hiện', 'Made at our workshop')}</span><h3 id="embT">${t('Khởi Nguồn 2019', 'Khoi Nguon 2019')}</h3><p id="embS">${EMB_CAPS[0][k]}</p><div class="emb__dots" aria-hidden="true">${dots}</div></div>
-    <div class="emb__stage" id="embStage"><div class="emb__glow"></div><div class="compass" id="embCompass">${COMPASS}</div>${pieces}</div>
+    <div class="emb__stage" id="embStage"><div class="emb__glow"></div><div class="compass" id="embCompass">${COMPASS}</div>${pieces}<div class="compass compass--arms" id="embArms">${COMPASS_ARMS}</div></div>
   </div></div></div>
   <p class="sr-only">${t('Bốn miếng thêu hình quạt và một huy hiệu tròn có bản đồ Việt Nam của sự kiện Khởi Nguồn 2019, ghép lại thành một la bàn.', 'Four fan-shaped embroidered patches and a round badge with a map of Vietnam from the Khoi Nguon 2019 event, assembled into a compass.')}</p>
   <div class="wrap emb__after reveal">
